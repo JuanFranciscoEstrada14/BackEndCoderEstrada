@@ -47,9 +47,32 @@ class ProductManager {
             return;
         }
 
-        const product = new Product(this.products.length + 1, title, description, price, img, code, stock);
+        const newId = this.products.length > 0 ? this.products[this.products.length - 1].id + 1 : 1;
+        const product = new Product(newId, title, description, price, img, code, stock);
         this.products.push(product);
         this.saveProducts();
+    }
+
+    updateProduct(id, updatedProduct) {
+        const index = this.products.findIndex(product => product.id === id);
+        if (index !== -1) {
+            this.products[index] = { ...this.products[index], ...updatedProduct };
+            this.saveProducts();
+            console.log(`Producto con ID ${id} actualizado exitosamente.`);
+        } else {
+            console.error(`No se encontró ningún producto con ID ${id}.`);
+        }
+    }
+
+    deleteProduct(id) {
+        const index = this.products.findIndex(product => product.id === id);
+        if (index !== -1) {
+            this.products.splice(index, 1);
+            this.saveProducts();
+            console.log(`Producto con ID ${id} eliminado exitosamente.`);
+        } else {
+            console.error(`No se encontró ningún producto con ID ${id}.`);
+        }
     }
 
     getProducts() {
@@ -57,14 +80,11 @@ class ProductManager {
     }
 
     getProductById(id) {
-        const product = this.products.find(item => item.id === id);
-        if (!product) {
-            console.log("No se encontró este producto");
-        } else {
-            console.log("Se encontró!", product);
-        }
+        return this.products.find(item => item.id === id);
     }
 }
+
+module.exports = ProductManager;
 
 
 const manager = new ProductManager('productos.json');
@@ -74,3 +94,16 @@ console.log(manager.getProducts());
 manager.addProduct("Producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25);
 
 console.log(manager.getProducts());
+
+
+manager.updateProduct(1, {
+    title: "Producto actualizado",
+    description: "Descripción actualizada",
+    price: 300,
+    img: "imagen_actualizada",
+    code: "xyz789",
+    stock: 30
+});
+
+
+manager.deleteProduct(1);
