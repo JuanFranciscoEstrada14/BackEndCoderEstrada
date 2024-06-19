@@ -37,7 +37,7 @@ app.get('/api/products/:pid', (req, res) => {
 app.post('/api/products', (req, res) => {
     const { title, description, code, price, status, stock, category, thumbnails } = req.body;
     if (!title || !description || !code || !price || !status || !stock || !category) {
-        return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+        return res.status(400).json({ error: 'Cada uno de los campos son obligatorios' });
     }
     const product = {
         id: manager.getProducts().length + 1,
