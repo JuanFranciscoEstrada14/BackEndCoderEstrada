@@ -13,9 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configura las sesiones
 app.use(session({
-    secret: process.env.SESSION_SECRET, // Usa SESSION_SECRET de .env
-    resave: false,
-    saveUninitialized: false,
+  secret: process.env.SESSION_SECRET, // Usa SESSION_SECRET de .env
+  resave: false,
+  saveUninitialized: false,
 }));
 
 app.use(passport.initialize());
@@ -29,5 +29,5 @@ app.use('/api/auth', authRoutes);
 // Configura el puerto y el servidor
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
