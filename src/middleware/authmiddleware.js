@@ -1,34 +1,26 @@
-const jwt = require('jsonwebtoken');
-const User = require('../dao/models/User');
-require('dotenv').config();
+// src/middleware/authMiddleware.js
 
-const SECRET_KEY = process.env.SECRET_KEY;
-
-// Middleware para verificar el token
-const authenticateToken = (req, res, next) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.redirect('/login');
+// Middleware para verificar el rol de usuario
+function authorizeRoles(roles = []) {
+  // Si roles es una cadena, conviértela en una matriz
+  if (typeof roles === 'string') {
+    roles = [roles];
   }
 
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return res.redirect('/login');
-    }
-    req.user = decoded;
-    next();
-  });
-};
-
-// Middleware para verificar roles
-const authorizeRole = (role) => {
   return (req, res, next) => {
-    if (req.user.role !== role) {
-      return res.status(403).json({ status: 'error', message: 'Acceso denegado' });
+    // Verificar si el usuario está autenticado
+    if (!req.user) {
+      return res.status(401).json({ status: 'error', message: 'No estás autenticado' });
     }
+
+    // Verificar si el rol del usuario está en la lista de roles permitidos
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ status: 'error', message: 'No tienes permisos para acceder a este recurso' });
+    }
+
+    // Si el rol está permitido, continúa con la siguiente función de middleware
     next();
   };
-};
+}
 
-module.exports = { authenticateToken, authorizeRole };
+module.exports = authorizeRoles;

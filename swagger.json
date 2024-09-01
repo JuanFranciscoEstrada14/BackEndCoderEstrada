@@ -1,0 +1,338 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Tienda",
+    "version": "1.0.0",
+    "description": "Documentación de la API de Tienda"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor local"
+    }
+  ],
+  "paths": {
+    "/api/products": {
+      "get": {
+        "summary": "Obtener todos los productos",
+        "description": "Devuelve una lista de todos los productos.",
+        "responses": {
+          "200": {
+            "description": "Lista de productos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo producto",
+        "description": "Agrega un nuevo producto a la tienda.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Producto creado con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos de entrada inválidos."
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "summary": "Obtener un producto por ID",
+        "description": "Devuelve un producto específico basado en su ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Producto no encontrado."
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un producto",
+        "description": "Actualiza un producto existente basado en su ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Producto actualizado con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos de entrada inválidos."
+          },
+          "404": {
+            "description": "Producto no encontrado."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un producto",
+        "description": "Elimina un producto existente basado en su ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto eliminado con éxito."
+          },
+          "404": {
+            "description": "Producto no encontrado."
+          }
+        }
+      }
+    },
+    "/api/cart": {
+      "get": {
+        "summary": "Obtener los productos en el carrito",
+        "description": "Devuelve una lista de productos en el carrito del usuario.",
+        "responses": {
+          "200": {
+            "description": "Lista de productos en el carrito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CartItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Agregar un producto al carrito",
+        "description": "Añade un producto al carrito del usuario.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Producto añadido al carrito con éxito."
+          },
+          "400": {
+            "description": "Datos de entrada inválidos."
+          }
+        }
+      }
+    },
+    "/api/cart/{productId}": {
+      "delete": {
+        "summary": "Eliminar un producto del carrito",
+        "description": "Elimina un producto del carrito del usuario.",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto eliminado del carrito con éxito."
+          },
+          "404": {
+            "description": "Producto no encontrado en el carrito."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID del producto."
+          },
+          "title": {
+            "type": "string",
+            "description": "Título del producto."
+          },
+          "description": {
+            "type": "string",
+            "description": "Descripción del producto."
+          },
+          "price": {
+            "type": "number",
+            "description": "Precio del producto."
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "URL de la imagen del producto."
+          },
+          "code": {
+            "type": "string",
+            "description": "Código único del producto."
+          },
+          "stock": {
+            "type": "integer",
+            "description": "Cantidad en stock del producto."
+          },
+          "category": {
+            "type": "string",
+            "description": "Categoría del producto."
+          },
+          "status": {
+            "type": "boolean",
+            "description": "Estado del producto."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Propietario del producto."
+          }
+        }
+      },
+      "ProductInput": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Título del producto."
+          },
+          "description": {
+            "type": "string",
+            "description": "Descripción del producto."
+          },
+          "price": {
+            "type": "number",
+            "description": "Precio del producto."
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "URL de la imagen del producto."
+          },
+          "code": {
+            "type": "string",
+            "description": "Código único del producto."
+          },
+          "stock": {
+            "type": "integer",
+            "description": "Cantidad en stock del producto."
+          },
+          "category": {
+            "type": "string",
+            "description": "Categoría del producto."
+          }
+        },
+        "required": ["title", "description", "price", "code", "stock", "category"]
+      },
+      "CartItem": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "ID del producto en el carrito."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Cantidad del producto en el carrito."
+          }
+        }
+      },
+      "CartInput": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "ID del producto a agregar al carrito."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Cantidad del producto a agregar."
+          }
+        },
+        "required": ["productId", "quantity"]
+      }
+    }
+  }
+}

@@ -8,7 +8,8 @@ const productSchema = new mongoose.Schema({
     code: { type: String, required: true, unique: true },
     stock: { type: Number, required: true },
     category: { type: String, required: true },
-    status: { type: Boolean, default: true }
+    status: { type: Boolean, default: true },
+    owner: { type: String, default: 'admin' } // Añadido owner
 });
 
 const Product = mongoose.model('Product', productSchema);

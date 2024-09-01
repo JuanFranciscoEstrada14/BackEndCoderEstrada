@@ -7,63 +7,62 @@ require('dotenv').config();
 
 // Configura la estrategia local para Passport
 passport.use('local', new LocalStrategy({
-  usernameField: 'email',
-  passwordField: 'password'
+    usernameField: 'email',
+    passwordField: 'password'
 }, async (email, password, done) => {
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return done(null, false, { message: 'No existe el usuario' });
-    }
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return done(null, false, { message: 'No existe el usuario' });
+        }
 
-    // Utilizamos la función comparePassword que agregamos en el archivo User.js
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return done(null, false, { message: 'Contraseña incorrecta' });
+        // Utilizamos la función comparePassword que agregamos en el archivo User.js
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            return done(null, false, { message: 'Contraseña incorrecta' });
+        }
+
+        return done(null, user);
+    } catch (error) {
+        return done(error);
     }
-    return done(null, user);
-  } catch (error) {
-    return done(error);
-  }
 }));
 
 // Configura la estrategia de GitHub para Passport
-passport.use('github', new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: '/auth/github/callback'
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: 'http://localhost:8080/api/auth/github/callback'
 }, async (accessToken, refreshToken, profile, done) => {
-  try {
-    const user = await User.findOne({ email: profile.emails[0].value });
-    if (!user) {
-      const newUser = new User({
-        email: profile.emails[0].value,
-        role: 'user',
-        githubId: profile.id
-      });
-      await newUser.save();
-      return done(null, newUser);
+    try {
+        const user = await User.findOne({ email: profile.emails[0].value });
+        if (user) {
+            return done(null, user);
+        }
+
+        const newUser = new User({
+            email: profile.emails[0].value,
+            password: '', // No se requiere contraseña para GitHub
+            role: 'user'
+        });
+        await newUser.save();
+        return done(null, newUser);
+    } catch (error) {
+        return done(error);
     }
-    return done(null, user);
-  } catch (error) {
-    return done(error);
-  }
 }));
 
-// Configura la estrategia de JWT para Passport
-passport.use('jwt', new JwtStrategy({
-  jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-  secretOrKey: process.env.JWT_SECRET
-}, async (jwt_payload, done) => {
-  try {
-    const user = await User.findById(jwt_payload.id);
-    if (!user) {
-      return done(null, false);
-    }
-    return done(null, user);
-  } catch (error) {
-    return done(error, false);
-  }
-}));
+// Serializa el usuario para almacenar en sesión
+passport.serializeUser((user, done) => {
+    done(null, user._id);
+});
 
-module.exports = passport;
+// Deserializa el usuario desde la sesión
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
+});
