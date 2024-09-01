@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+</head>
+<body>
+    <h1>Productos</h1>
+    
+    {{#if user}}
+        <p>Bienvenido, {{user.email}}!</p>
+        {{#if (eq user.role "admin")}}
+            <p>Rol: Administrador</p>
+        {{else}}
+            <p>Rol: Usuario</p>
+        {{/if}}
+        <a href="/logout">Logout</a>
+    {{/if}}
+
+    <ul>
+        {{#each products}}
+            <li>
+                <h2>{{this.title}}</h2>
+                <p>{{this.description}}</p>
+                <p>Precio: {{this.price}}</p>
+                <p>Categoría: {{this.category}}</p>
+                <form action="/api/carts/{{cartId}}/product/{{this._id}}" method="POST">
+                    <input type="number" name="quantity" min="1" value="1" required>
+                    <button type="submit">Agregar al Carrito</button>
+                </form>
+                <a href="/products/{{this._id}}">Ver Detalles</a>
+            </li>
+        {{/each}}
+    </ul>
+    <div>
+        {{#if hasPrevPage}}
+            <a href="{{prevLink}}">Página Anterior</a>
+        {{/if}}
+        {{#if hasNextPage}}
+            <a href="{{nextLink}}">Página Siguiente</a>
+        {{/if}}
+    </div>
+    <a href="/">Volver al Inicio</a>
+    <a href="/realtimeproducts">Ver Productos en Tiempo Real</a>
+</body>
+</html>

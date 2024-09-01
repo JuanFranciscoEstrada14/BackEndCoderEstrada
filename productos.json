@@ -4,7 +4,7 @@
     "title": "Producto prueba",
     "description": "Este es un producto prueba",
     "price": 200,
-    "img": "sin imagen",
+    "thumbnail": "sin imagen",
     "code": "abc123",
     "stock": 25
   }

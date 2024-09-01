@@ -1,12 +1,13 @@
-const fs = require('fs');
+// main.js
+const fs = require('fs').promises;
 
 class Product {
-    constructor(id, title, description, price, img, code, stock) {
+    constructor(id, title, description, price, thumbnail, code, stock) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.price = price;
-        this.img = img;
+        this.thumbnail = thumbnail;
         this.code = code;
         this.stock = stock;
     }
@@ -19,25 +20,26 @@ class ProductManager {
         this.loadProducts();
     }
 
-    loadProducts() {
+    async loadProducts() {
         try {
-            const data = fs.readFileSync(this.path, 'utf8');
+            const data = await fs.readFile(this.path, 'utf8');
             this.products = JSON.parse(data);
         } catch (err) {
             console.error('Error al cargar los productos:', err);
+            this.products = [];
         }
     }
 
-    saveProducts() {
+    async saveProducts() {
         try {
-            fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2));
+            await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
         } catch (err) {
             console.error('No se guardaron los productos:', err);
         }
     }
 
-    addProduct(title, description, price, img, code, stock) {
-        if (!title || !description || !price || !img || !code || !stock) {
+    async addProduct({ title, description, price, thumbnail, code, stock }) {
+        if (!title || !description || !price || !thumbnail || !code || !stock) {
             console.error("Completar todos los datos es obligatorio");
             return;
         }
@@ -48,62 +50,48 @@ class ProductManager {
         }
 
         const newId = this.products.length > 0 ? this.products[this.products.length - 1].id + 1 : 1;
-        const product = new Product(newId, title, description, price, img, code, stock);
+        const product = new Product(newId, title, description, price, thumbnail, code, stock);
         this.products.push(product);
-        this.saveProducts();
+        await this.saveProducts();
     }
 
-    updateProduct(id, updatedProduct) {
+    async getProducts() {
+        await this.loadProducts();
+        return this.products;
+    }
+
+    async getProductById(id) {
+        await this.loadProducts();
+        const product = this.products.find(item => item.id === id);
+        if (!product) {
+            console.error('Producto no encontrado');
+        }
+        return product;
+    }
+
+    async updateProduct(id, updatedFields) {
+        await this.loadProducts();
         const index = this.products.findIndex(product => product.id === id);
         if (index !== -1) {
-            this.products[index] = { ...this.products[index], ...updatedProduct };
-            this.saveProducts();
+            this.products[index] = { ...this.products[index], ...updatedFields };
+            await this.saveProducts();
             console.log(`Producto con ID ${id} actualizado exitosamente.`);
         } else {
             console.error(`No se encontró ningún producto con ID ${id}.`);
         }
     }
 
-    deleteProduct(id) {
+    async deleteProduct(id) {
+        await this.loadProducts();
         const index = this.products.findIndex(product => product.id === id);
         if (index !== -1) {
             this.products.splice(index, 1);
-            this.saveProducts();
+            await this.saveProducts();
             console.log(`Producto con ID ${id} eliminado exitosamente.`);
         } else {
             console.error(`No se encontró ningún producto con ID ${id}.`);
         }
     }
-
-    getProducts() {
-        return this.products;
-    }
-
-    getProductById(id) {
-        return this.products.find(item => item.id === id);
-    }
 }
 
 module.exports = ProductManager;
-
-
-const manager = new ProductManager('productos.json');
-
-console.log(manager.getProducts());
-
-manager.addProduct("Producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25);
-
-console.log(manager.getProducts());
-
-
-manager.updateProduct(1, {
-    title: "Producto actualizado",
-    description: "Descripción actualizada",
-    price: 300,
-    img: "imagen_actualizada",
-    code: "xyz789",
-    stock: 30
-});
-
-
-manager.deleteProduct(1);
