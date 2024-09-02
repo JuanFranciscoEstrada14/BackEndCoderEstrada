@@ -1,9 +1,7 @@
-// src/config/logger.js
-
 const winston = require('winston');
 const { format, createLogger, transports } = winston;
 
-// Define el nivel de logging
+
 const logLevels = {
   debug: 0,
   http: 1,
@@ -13,7 +11,7 @@ const logLevels = {
   fatal: 5
 };
 
-// Configuración común para todos los logs
+
 const commonOptions = {
   format: format.combine(
     format.timestamp(),
@@ -21,7 +19,6 @@ const commonOptions = {
   )
 };
 
-// Configuración para desarrollo
 const devLogger = createLogger({
   level: 'debug',
   levels: logLevels,
@@ -36,7 +33,6 @@ const devLogger = createLogger({
   ]
 });
 
-// Configuración para producción
 const prodLogger = createLogger({
   level: 'info',
   levels: logLevels,
@@ -56,5 +52,4 @@ const prodLogger = createLogger({
   ]
 });
 
-// Exporta el logger basado en el entorno
 module.exports = process.env.NODE_ENV === 'production' ? prodLogger : devLogger;

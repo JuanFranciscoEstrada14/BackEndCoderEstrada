@@ -1,11 +1,11 @@
 module.exports = {
     transport: {
-      service: 'Gmail', // o el servicio de correo que elijas
+      service: 'Gmail',
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
       }
     },
-    from: 'your-email@example.com' // Cambia esto a tu dirección de correo
+    from: 'your-email@example.com'
   };
   

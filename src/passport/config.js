@@ -1,12 +1,11 @@
-// src/passport/config.js
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('../dao/models/User');
 const bcrypt = require('bcrypt');
-const config = require('../config/config'); // Asegúrate de esta línea
+const config = require('../config/config'); 
 
-// Configura la estrategia local para Passport
+
 passport.use('local', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password'
@@ -17,7 +16,6 @@ passport.use('local', new LocalStrategy({
             return done(null, false, { message: 'No existe el usuario' });
         }
 
-        // Utilizamos la función comparePassword que agregamos en el archivo User.js
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             return done(null, false, { message: 'Contraseña incorrecta' });
@@ -29,7 +27,7 @@ passport.use('local', new LocalStrategy({
     }
 }));
 
-// Configura la estrategia de GitHub para Passport
+
 passport.use(new GitHubStrategy({
     clientID: config.githubClientId,
     clientSecret: config.githubClientSecret,
@@ -43,7 +41,7 @@ passport.use(new GitHubStrategy({
 
         const newUser = new User({
             email: profile.emails[0].value,
-            password: '', // No se requiere contraseña para GitHub
+            password: '', 
             role: 'user'
         });
         await newUser.save();
@@ -53,12 +51,10 @@ passport.use(new GitHubStrategy({
     }
 }));
 
-// Serializa el usuario para almacenar en sesión
 passport.serializeUser((user, done) => {
     done(null, user._id);
 });
 
-// Deserializa el usuario desde la sesión
 passport.deserializeUser(async (id, done) => {
     try {
         const user = await User.findById(id);

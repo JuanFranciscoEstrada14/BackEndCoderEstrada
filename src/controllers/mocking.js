@@ -1,11 +1,8 @@
-// src/controllers/mocking.js
-
 const express = require('express');
 const router = express.Router();
-const faker = require('faker'); // Para generar datos falsos
+const faker = require('faker'); 
 const ProductDTO = require('../dto/ProductDTO');
 
-// Generar un producto falso
 const generateFakeProduct = () => ({
     title: faker.commerce.productName(),
     description: faker.commerce.productDescription(),
@@ -16,7 +13,6 @@ const generateFakeProduct = () => ({
     category: faker.commerce.department()
 });
 
-// Endpoint para generar y entregar 100 productos falsos
 router.get('/mockingproducts', (req, res) => {
     try {
         const products = Array.from({ length: 100 }, generateFakeProduct);

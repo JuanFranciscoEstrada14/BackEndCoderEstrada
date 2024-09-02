@@ -4,7 +4,7 @@ const Product = require('../dao/models/Product');
 const Cart = require('../dao/models/Cart');
 const { authenticateToken } = require('../middleware/authMiddleware');
 
-// Vista de productos con paginación, filtrado y ordenamiento
+
 exports.getProducts = async (req, res) => {
   try {
     const { limit = 10, page = 1, sort = '', query = '' } = req.query;
@@ -37,7 +37,7 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// Vista de carrito
+
 exports.getCart = async (req, res) => {
   try {
     const cid = req.params.cid;
@@ -53,7 +53,7 @@ exports.getCart = async (req, res) => {
   }
 };
 
-// Vista de inicio
+
 exports.getHome = async (req, res) => {
   try {
     const products = await Product.find();
@@ -63,17 +63,17 @@ exports.getHome = async (req, res) => {
   }
 };
 
-// Vista de productos en tiempo real
+
 exports.getRealTimeProducts = (req, res) => {
   res.render('realtimeProducts');
 };
 
-// Vista de login
+
 exports.getLogin = (req, res) => {
   res.render('login');
 };
 
-// Vista de registro
+
 exports.getRegister = (req, res) => {
   res.render('register');
 };

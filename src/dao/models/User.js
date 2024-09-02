@@ -16,12 +16,10 @@ const userSchema = new mongoose.Schema({
   last_connection: { type: Date }
 });
 
-// Método para comparar contraseñas
 userSchema.methods.comparePassword = function(password) {
   return bcrypt.compare(password, this.password);
 };
 
-// Middleware para actualizar last_connection en cada login o logout
 userSchema.pre('save', function(next) {
   if (this.isModified('last_connection') || this.isNew) {
     this.last_connection = new Date();

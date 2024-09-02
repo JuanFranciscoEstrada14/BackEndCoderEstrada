@@ -1,8 +1,6 @@
-// src/controllers/loggerTest.js
-
 const express = require('express');
 const router = express.Router();
-const logger = require('../config/logger'); // Importa el logger
+const logger = require('../config/logger');
 
 router.get('/', (req, res) => {
   logger.debug('This is a debug message');

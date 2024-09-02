@@ -1,5 +1,3 @@
-// src/middleware/errorHandler.js
-
 const errorMessages = {
     'PRODUCT_CREATION_ERROR': 'Error al crear el producto',
     'PRODUCT_NOT_FOUND': 'Producto no encontrado',
@@ -13,8 +11,6 @@ const errorMessages = {
 
 const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
-
-    // Mapea el mensaje del error basado en el tipo de error
     const errorMessage = errorMessages[err.code] || 'Error interno del servidor';
 
     res.status(err.status || 500).json({

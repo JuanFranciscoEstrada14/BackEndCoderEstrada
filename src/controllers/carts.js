@@ -5,7 +5,7 @@ const Product = require('../dao/models/Product');
 const User = require('../dao/models/User');
 const cartRepo = new CartRepository();
 
-// Eliminar un producto del carrito
+
 exports.deleteProductFromCart = async (req, res) => {
     try {
         const { cid, pid } = req.params;
@@ -20,7 +20,6 @@ exports.deleteProductFromCart = async (req, res) => {
     }
 };
 
-// Actualizar el carrito con un arreglo de productos
 exports.updateCart = async (req, res) => {
     try {
         const { cid } = req.params;
@@ -37,7 +36,6 @@ exports.updateCart = async (req, res) => {
     }
 };
 
-// Actualizar solo la cantidad de un producto en el carrito
 exports.updateProductQuantity = async (req, res) => {
     try {
         const { cid, pid } = req.params;
@@ -54,7 +52,6 @@ exports.updateProductQuantity = async (req, res) => {
     }
 };
 
-// Eliminar todos los productos del carrito
 exports.deleteAllProductsFromCart = async (req, res) => {
     try {
         const { cid } = req.params;
@@ -70,7 +67,6 @@ exports.deleteAllProductsFromCart = async (req, res) => {
     }
 };
 
-// Finalizar la compra
 exports.purchaseCart = async (req, res) => {
     try {
         const { cid } = req.params;

@@ -2,26 +2,26 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../dao/models/User');
-const UserDTO = require('../dto/UserDTO'); // Asegúrate de que la ruta sea correcta
+const UserDTO = require('../dto/UserDTO'); 
 const PasswordResetToken = require('../dao/models/PasswordResetToken');
 const { sendPasswordResetEmail } = require('../services/emailService');
 
-// Función para registrar un nuevo usuario
+
 exports.register = async (req, res) => {
   const { email, password, role = 'user' } = req.body;
 
   try {
-    // Verificar si el usuario ya existe
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ status: 'error', message: 'Usuario ya existe' });
     }
 
-    // Hashear la contraseña utilizando bcrypt
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Crear un nuevo usuario
+
     const newUser = new User({ email, password: hashedPassword, role });
     await newUser.save();
 
@@ -31,7 +31,6 @@ exports.register = async (req, res) => {
   }
 };
 
-// Función para login de usuario
 exports.login = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
@@ -53,21 +52,21 @@ exports.login = (req, res, next) => {
   })(req, res, next);
 };
 
-// Función para autenticación con GitHub
+
 exports.github = passport.authenticate('github', { scope: ['user:email'] });
 
-// Función de callback de GitHub
+
 exports.githubCallback = (req, res) => {
-  res.redirect('/products'); // Redirige a la vista de productos o a donde desees
+  res.redirect('/products'); 
 };
 
-// Función de logout
+
 exports.logout = (req, res) => {
   req.logout();
   res.redirect('/login');
 };
 
-// Función para obtener el usuario actual
+
 exports.current = (req, res) => {
   if (req.user) {
     const userDTO = new UserDTO(req.user);
@@ -77,7 +76,7 @@ exports.current = (req, res) => {
   }
 };
 
-// Función para solicitar el restablecimiento de contraseña
+
 exports.requestPasswordReset = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
@@ -91,7 +90,7 @@ exports.requestPasswordReset = async (req, res) => {
   await PasswordResetToken.create({
     userId: user._id,
     token,
-    expiresAt: new Date(Date.now() + 3600000) // 1 hora
+    expiresAt: new Date(Date.now() + 3600000) 
   });
 
   await sendPasswordResetEmail(email, token);
@@ -99,7 +98,6 @@ exports.requestPasswordReset = async (req, res) => {
   res.status(200).json({ status: 'success', message: 'Correo de restablecimiento enviado' });
 };
 
-// Función para restablecer la contraseña
 exports.resetPassword = async (req, res) => {
   const { token } = req.params;
   const { newPassword } = req.body;
@@ -123,7 +121,7 @@ exports.resetPassword = async (req, res) => {
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   user.password = hashedPassword;
   await user.save();
-  await PasswordResetToken.deleteMany({ userId: user._id }); // Elimina los tokens asociados
+  await PasswordResetToken.deleteMany({ userId: user._id }); 
 
   res.status(200).json({ status: 'success', message: 'Contraseña restablecida exitosamente' });
 };

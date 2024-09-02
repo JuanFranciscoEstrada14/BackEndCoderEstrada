@@ -9,7 +9,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             const socket = io();
             
-            // Escucha los eventos de producto y actualiza la lista
             socket.on('productList', products => {
                 const productList = document.getElementById('product-list');
                 productList.innerHTML = '';
@@ -19,8 +18,6 @@
                     productList.appendChild(li);
                 });
             });
-
-            // Maneja el formulario de nuevos productos
             const form = document.getElementById('product-form');
             form.addEventListener('submit', e => {
                 e.preventDefault();

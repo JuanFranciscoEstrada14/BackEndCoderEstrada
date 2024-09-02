@@ -1,10 +1,9 @@
-// src/controllers/userController.js
 const User = require('../dao/models/User');
-const nodemailer = require('nodemailer'); // Para enviar correos electrónicos
+const nodemailer = require('nodemailer'); 
 
-// Configuración del transportador de correo
+
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // O el servicio de correo que prefieras
+    service: 'gmail', 
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD
@@ -12,7 +11,6 @@ const transporter = nodemailer.createTransport({
 });
 
 const UserController = {
-    // Obtener todos los usuarios (nombre, correo, rol) para admin
     getAllUsersForAdmin: async (req, res) => {
         try {
             const users = await User.find({}, 'first_name last_name email role');
@@ -22,7 +20,6 @@ const UserController = {
         }
     },
 
-    // Obtener un usuario específico para editar
     getUserForEdit: async (req, res) => {
         try {
             const userId = req.params.uid;
@@ -36,7 +33,6 @@ const UserController = {
         }
     },
 
-    // Actualizar rol de usuario
     updateUserRole: async (req, res) => {
         const { role } = req.body;
         try {
@@ -51,7 +47,6 @@ const UserController = {
         }
     },
 
-    // Eliminar usuario
     deleteUser: async (req, res) => {
         try {
             await User.findByIdAndDelete(req.params.uid);
@@ -61,16 +56,13 @@ const UserController = {
         }
     },
 
-    // Eliminar usuarios inactivos
     deleteInactiveUsers: async (req, res) => {
         try {
             const twoDaysAgo = new Date();
-            twoDaysAgo.setDate(twoDaysAgo.getDate() - 2); // Cambia a -0.021 para pruebas (30 minutos)
+            twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 
-            // Encuentra usuarios inactivos
-            const inactiveUsers = await User.find({ last_connection: { $lt: twoDaysAgo } });
+                        const inactiveUsers = await User.find({ last_connection: { $lt: twoDaysAgo } });
 
-            // Enviar correos y eliminar usuarios inactivos
             for (const user of inactiveUsers) {
                 await transporter.sendMail({
                     from: process.env.EMAIL_USER,
@@ -87,7 +79,6 @@ const UserController = {
         }
     },
 
-    // Subir documentos
     uploadDocuments: async (req, res) => {
         try {
             const userId = req.params.uid;
@@ -115,7 +106,6 @@ const UserController = {
         }
     },
 
-    // Actualizar a usuario a premium
     promoteToPremium: async (req, res) => {
         try {
             const userId = req.params.uid;

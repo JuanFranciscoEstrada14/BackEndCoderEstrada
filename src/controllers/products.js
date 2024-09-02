@@ -6,7 +6,6 @@ const authorizeRoles = require('../middleware/authMiddleware');
 
 const productRepo = new ProductRepository();
 
-// Crear un producto - Solo para administradores
 router.post('/', authorizeRoles('admin'), async (req, res) => {
     try {
         const { title, description, price, thumbnail, code, stock, category } = req.body;
@@ -23,7 +22,6 @@ router.post('/', authorizeRoles('admin'), async (req, res) => {
     }
 });
 
-// Obtener todos los productos con filtros, paginación y ordenamiento
 router.get('/', async (req, res) => {
     try {
         const { limit = 10, page = 1, sort = '', query = '' } = req.query;
@@ -52,7 +50,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Actualizar un producto - Solo para administradores
 router.put('/:pid', authorizeRoles('admin'), async (req, res) => {
     try {
         const pid = req.params.pid;
@@ -69,7 +66,6 @@ router.put('/:pid', authorizeRoles('admin'), async (req, res) => {
     }
 });
 
-// Eliminar un producto - Solo para administradores
 router.delete('/:pid', authorizeRoles('admin'), async (req, res) => {
     try {
         const pid = req.params.pid;
