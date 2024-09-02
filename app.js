@@ -41,6 +41,7 @@ const viewRoutes = require('./src/controllers/views');
 const mockingRoutes = require('./src/controllers/mocking'); // Importa las rutas de mocking
 const loggerRoutes = require('./src/controllers/loggertest'); // Importa las rutas de loggerTest
 const userRoutes = require('./src/routes/users'); // Importa las rutas de usuarios
+const adminRoutes = require('./src/routes/admin'); // Importa las rutas de administración
 
 app.use('/api/auth', authRoutes);
 app.use('/api/carts', cartRoutes);
@@ -49,6 +50,7 @@ app.use('/', viewRoutes);
 app.use('/api', mockingRoutes); // Usa las rutas de mocking
 app.use('/api/loggerTest', loggerRoutes); // Usa las rutas de loggerTest
 app.use('/api/users', userRoutes); // Usa las rutas de usuarios
+app.use('/admin', adminRoutes); // Usa las rutas de administración
 
 // Manejador de errores
 app.use((err, req, res, next) => {

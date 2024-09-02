@@ -1,0 +1,22 @@
+<!-- views/userEdit.hbs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario</title>
+</head>
+<body>
+    <h1>Editar Usuario</h1>
+    <form action="/admin/users/{{user._id}}/update" method="POST">
+        <label for="role">Rol:</label>
+        <select name="role" id="role">
+            <option value="user" {{#if (eq user.role 'user')}}selected{{/if}}>Usuario</option>
+            <option value="premium" {{#if (eq user.role 'premium')}}selected{{/if}}>Premium</option>
+            <option value="admin" {{#if (eq user.role 'admin')}}selected{{/if}}>Admin</option>
+        </select>
+        <button type="submit">Actualizar</button>
+    </form>
+    <a href="/admin/users">Volver</a>
+</body>
+</html>

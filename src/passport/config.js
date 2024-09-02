@@ -1,9 +1,10 @@
+// src/passport/config.js
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('../dao/models/User');
 const bcrypt = require('bcrypt');
-require('dotenv').config();
+const config = require('../config/config'); // Asegúrate de esta línea
 
 // Configura la estrategia local para Passport
 passport.use('local', new LocalStrategy({
@@ -30,8 +31,8 @@ passport.use('local', new LocalStrategy({
 
 // Configura la estrategia de GitHub para Passport
 passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    clientID: config.githubClientId,
+    clientSecret: config.githubClientSecret,
     callbackURL: 'http://localhost:8080/api/auth/github/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
