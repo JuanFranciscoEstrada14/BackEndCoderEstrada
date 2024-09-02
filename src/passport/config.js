@@ -3,8 +3,11 @@ const LocalStrategy = require('passport-local').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('../dao/models/User');
 const bcrypt = require('bcrypt');
-const config = require('../config/config'); 
 
+// Verifica que las variables de entorno están definidas
+if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+    throw new Error('GITHUB_CLIENT_ID y GITHUB_CLIENT_SECRET deben estar definidas en las variables de entorno');
+}
 
 passport.use('local', new LocalStrategy({
     usernameField: 'email',
@@ -27,10 +30,9 @@ passport.use('local', new LocalStrategy({
     }
 }));
 
-
 passport.use(new GitHubStrategy({
-    clientID: config.githubClientId,
-    clientSecret: config.githubClientSecret,
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: 'http://localhost:8080/api/auth/github/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
